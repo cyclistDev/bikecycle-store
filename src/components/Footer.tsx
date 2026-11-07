@@ -1,5 +1,6 @@
  import { motion } from "framer-motion";
  import { Instagram, Facebook, Youtube, MapPin, Mail, Phone } from "lucide-react";
+ import { siteConfig } from "@/config/site";
  
  const footerLinks = {
    products: [
@@ -53,15 +54,15 @@
                <div className="mt-6 space-y-3">
                  <div className="flex items-center gap-3 text-muted-foreground">
                    <MapPin className="w-4 h-4 text-primary" />
-                   <span className="text-sm">123 Norodom Blvd, Phnom Penh</span>
+                   <span className="text-sm">{siteConfig.address}</span>
                  </div>
                  <div className="flex items-center gap-3 text-muted-foreground">
                    <Phone className="w-4 h-4 text-primary" />
-                   <span className="text-sm">+855 12 345 678</span>
+                   <span className="text-sm">{siteConfig.phone}</span>
                  </div>
                  <div className="flex items-center gap-3 text-muted-foreground">
                    <Mail className="w-4 h-4 text-primary" />
-                   <span className="text-sm">sales@sworks-cambodia.com</span>
+                   <span className="text-sm">{siteConfig.email}</span>
                  </div>
                </div>
  
@@ -148,7 +149,7 @@
          {/* Bottom Bar */}
          <div className="border-t border-border mt-12 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
            <p className="text-sm text-muted-foreground">
-             © 2024 S-Works Cambodia. All rights reserved.
+             © {new Date().getFullYear()} {siteConfig.name}. All rights reserved.
            </p>
            <div className="flex gap-6">
              <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">

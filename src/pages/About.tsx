@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { siteConfig } from "@/config/site";
 
 const teamMembers = [
   {
@@ -314,9 +315,7 @@ const About = () => {
                       Address
                     </h3>
                     <p className="text-muted-foreground">
-                      #123 Street 271, Sangkat Toul Tompong
-                      <br />
-                      Khan Chamkarmon, Phnom Penh 12000
+                      {siteConfig.address}
                     </p>
                   </div>
                 </div>
@@ -332,9 +331,9 @@ const About = () => {
                       Phone
                     </h3>
                     <p className="text-muted-foreground">
-                      +855 23 456 789
+                      {siteConfig.phone}
                       <br />
-                      +855 12 345 678 (WhatsApp)
+                      {siteConfig.whatsapp} (WhatsApp)
                     </p>
                   </div>
                 </div>
@@ -350,9 +349,9 @@ const About = () => {
                       Email
                     </h3>
                     <p className="text-muted-foreground">
-                      info@sworkscambodia.com
+                      {siteConfig.supportEmail}
                       <br />
-                      service@sworkscambodia.com
+                      {siteConfig.serviceEmail}
                     </p>
                   </div>
                 </div>

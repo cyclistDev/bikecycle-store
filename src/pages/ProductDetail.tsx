@@ -14,13 +14,26 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { products } from "@/data/products";
+import { useProducts } from "@/hooks/useProducts";
 import { useCart } from "@/context/CartContext";
 
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { addItem } = useCart();
+  const { data: products = [], isLoading } = useProducts();
   const product = products.find((p) => p.id === id);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <div className="container mx-auto px-4 pt-32 pb-16">
+          <div className="h-96 rounded-xl bg-card border border-border animate-pulse" />
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   if (!product) {
     return (

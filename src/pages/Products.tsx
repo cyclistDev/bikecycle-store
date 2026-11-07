@@ -6,7 +6,8 @@
  import { ProductCard } from "@/components/ProductCard";
  import { Button } from "@/components/ui/button";
  import { Input } from "@/components/ui/input";
- import { products, categories, type BikeCategory } from "@/data/products";
+ import { categories, type BikeCategory } from "@/data/products";
+import { useProducts } from "@/hooks/useProducts";
  
  type SortOption = "featured" | "price-asc" | "price-desc" | "name";
  
@@ -22,9 +23,10 @@
    const [sortBy, setSortBy] = useState<SortOption>("featured");
    const [searchQuery, setSearchQuery] = useState("");
    const [showFilters, setShowFilters] = useState(false);
+   const { data: allProducts = [], isLoading } = useProducts();
  
    const filteredProducts = useMemo(() => {
-     let result = [...products];
+     let result = [...allProducts];
  
      // Filter by category
      if (activeCategory !== "all") {
@@ -65,7 +67,7 @@
      }
  
      return result;
-   }, [activeCategory, sortBy, searchQuery]);
+   }, [allProducts, activeCategory, sortBy, searchQuery]);
  
    return (
      <div className="min-h-screen bg-background">
@@ -222,7 +224,16 @@
            </div>
  
            {/* Products Grid */}
-           {filteredProducts.length > 0 ? (
+           {isLoading ? (
+             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+               {[...Array(6)].map((_, i) => (
+                 <div
+                   key={i}
+                   className="h-96 rounded-xl bg-card border border-border animate-pulse"
+                 />
+               ))}
+             </div>
+           ) : filteredProducts.length > 0 ? (
              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                {filteredProducts.map((product, index) => (
                  <ProductCard key={product.id} product={product} index={index} />

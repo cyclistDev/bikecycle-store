@@ -5,26 +5,13 @@
  import { Input } from "@/components/ui/input";
  import { Textarea } from "@/components/ui/textarea";
  import { useToast } from "@/hooks/use-toast";
- 
- const bikeModels = [
-   "S-Works Tarmac SL8",
-   "S-Works Aethos",
-   "S-Works Venge",
-   "S-Works Crux",
-   "S-Works Roubaix",
- ];
- 
- const paymentMethods = [
-   "Bank Transfer",
-   "Credit Card",
-   "Installment Plan (6 months)",
-   "Installment Plan (12 months)",
-   "Wing / ABA Pay",
- ];
+ import { useSubmitOrder } from "@/hooks/useSubmitOrder";
+ import { bikeModels, paymentMethods } from "@/data/formOptions";
+ import { siteConfig } from "@/config/site";
  
  export const OrderForm = () => {
    const { toast } = useToast();
-   const [isSubmitting, setIsSubmitting] = useState(false);
+   const submitOrder = useSubmitOrder();
    const [formData, setFormData] = useState({
      name: "",
      email: "",
@@ -36,25 +23,28 @@
  
    const handleSubmit = async (e: React.FormEvent) => {
      e.preventDefault();
-     setIsSubmitting(true);
- 
-     // Simulate form submission
-     await new Promise((resolve) => setTimeout(resolve, 1500));
- 
-     toast({
-       title: "Inquiry Submitted! 🚴",
-       description: "Our team will contact you within 24 hours.",
-     });
- 
-     setFormData({
-       name: "",
-       email: "",
-       phone: "",
-       bike: "",
-       payment: "",
-       message: "",
-     });
-     setIsSubmitting(false);
+
+     try {
+       await submitOrder.mutateAsync(formData);
+       toast({
+         title: "Inquiry Submitted!",
+         description: "Our team will contact you within 24 hours.",
+       });
+       setFormData({
+         name: "",
+         email: "",
+         phone: "",
+         bike: "",
+         payment: "",
+         message: "",
+       });
+     } catch {
+       toast({
+         title: "Submission failed",
+         description: "Something went wrong. Please try again or call us directly.",
+         variant: "destructive",
+       });
+     }
    };
  
    return (
@@ -92,7 +82,7 @@
                  </div>
                  <div>
                    <p className="text-sm text-muted-foreground">Call us</p>
-                   <p className="text-foreground font-medium">+855 12 345 678</p>
+                   <p className="text-foreground font-medium">{siteConfig.phone}</p>
                  </div>
                </div>
                <div className="flex items-center gap-4">
@@ -101,7 +91,7 @@
                  </div>
                  <div>
                    <p className="text-sm text-muted-foreground">Email us</p>
-                   <p className="text-foreground font-medium">sales@sworks-cambodia.com</p>
+                   <p className="text-foreground font-medium">{siteConfig.email}</p>
                  </div>
                </div>
              </div>
@@ -213,9 +203,9 @@
                  variant="racing"
                  size="lg"
                  className="w-full"
-                 disabled={isSubmitting}
+                 disabled={submitOrder.isPending}
                >
-                 {isSubmitting ? (
+                 {submitOrder.isPending ? (
                    "Submitting..."
                  ) : (
                    <>
