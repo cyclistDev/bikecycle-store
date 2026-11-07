@@ -8,7 +8,9 @@ import NotFound from "./pages/NotFound";
 import Products from "./pages/Products";
 import ProductDetail from "./pages/ProductDetail";
 import About from "./pages/About";
+import Favorites from "./pages/Favorites";
 import { CartProvider } from "@/context/CartContext";
+import { WishlistProvider } from "@/context/WishlistContext";
 import { CartSidebar } from "@/components/CartSidebar";
 
 const queryClient = new QueryClient();
@@ -16,6 +18,7 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <CartProvider>
+      <WishlistProvider>
       <TooltipProvider>
         <Toaster />
         <Sonner />
@@ -26,11 +29,13 @@ const App = () => (
             <Route path="/products" element={<Products />} />
             <Route path="/products/:id" element={<ProductDetail />} />
             <Route path="/about" element={<About />} />
+            <Route path="/favorites" element={<Favorites />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
+      </WishlistProvider>
     </CartProvider>
   </QueryClientProvider>
 );

@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ShoppingCart } from "lucide-react";
+import { Menu, X, ShoppingCart, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router-dom";
 import { useCart } from "@/context/CartContext";
+import { useWishlist } from "@/context/WishlistContext";
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -16,6 +17,7 @@ export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const { totalItems, setIsOpen: setCartOpen } = useCart();
+  const { count: wishlistCount } = useWishlist();
 
   return (
     <motion.nav
@@ -62,6 +64,19 @@ export const Navbar = () => {
               )
             )}
             
+            {/* Wishlist */}
+            <Link
+              to="/favorites"
+              className="relative p-2 text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <Heart className="w-5 h-5" />
+              {wishlistCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
+                  {wishlistCount}
+                </span>
+              )}
+            </Link>
+
             {/* Cart Button */}
             <button
               onClick={() => setCartOpen(true)}
@@ -84,6 +99,14 @@ export const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center gap-4">
+            <Link to="/favorites" className="relative p-2 text-foreground">
+              <Heart className="w-5 h-5" />
+              {wishlistCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
+                  {wishlistCount}
+                </span>
+              )}
+            </Link>
             <button
               onClick={() => setCartOpen(true)}
               className="relative p-2 text-foreground"

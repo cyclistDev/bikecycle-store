@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useProducts } from "@/hooks/useProducts";
 import { useCart } from "@/context/CartContext";
+import { useWishlist } from "@/context/WishlistContext";
 import {
   sizeCharts,
   frameColors,
@@ -29,6 +30,7 @@ import {
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { addItem } = useCart();
+  const { isWishlisted, toggle } = useWishlist();
   const { data: products = [], isLoading } = useProducts();
   const product = products.find((p) => p.id === id);
 
@@ -36,6 +38,7 @@ const ProductDetail = () => {
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState(frameColors[0].name);
   const [selectedGroupset, setSelectedGroupset] = useState(groupsetOptions[0].name);
+  const [activeImage, setActiveImage] = useState("");
 
   if (isLoading) {
     return (
@@ -81,6 +84,9 @@ const ProductDetail = () => {
   };
 
   const sizeChart = sizeCharts[product.category];
+  const images = [product.image, ...(product.gallery ?? [])];
+  const currentImage = images.includes(activeImage) ? activeImage : product.image;
+  const showColorTint = selectedColor !== frameColors[0].name;
   const recommended = recommendSize(product.category, Number(heightCm));
   const color = frameColors.find((c) => c.name === selectedColor) ?? frameColors[0];
   const groupset = groupsetOptions.find((g) => g.name === selectedGroupset) ?? groupsetOptions[0];
@@ -132,10 +138,21 @@ const ProductDetail = () => {
              >
                <div className="relative rounded-xl overflow-hidden bg-card border border-border">
                  <img
-                   src={product.image}
+                   src={currentImage}
                    alt={product.name}
                    className="w-full aspect-[4/3] object-cover"
                  />
+                 {/* Approximate frame color preview (CSS tint) */}
+                 {showColorTint && (
+                   <div
+                     className="absolute inset-0 pointer-events-none"
+                     style={{
+                       backgroundColor: color.hex,
+                       mixBlendMode: "color",
+                       opacity: 0.45,
+                     }}
+                   />
+                 )}
                  {/* Badges */}
                  <div className="absolute top-4 left-4 flex gap-2">
                    {product.isNew && (
@@ -148,6 +165,30 @@ const ProductDetail = () => {
                    )}
                  </div>
                </div>
+
+               {/* Thumbnails */}
+               {images.length > 1 && (
+                 <div className="flex gap-3 mt-4">
+                   {images.map((img, i) => (
+                     <button
+                       key={img}
+                       type="button"
+                       onClick={() => setActiveImage(img)}
+                       className={`w-20 h-20 rounded-lg overflow-hidden border-2 transition-colors ${
+                         currentImage === img
+                           ? "border-primary"
+                           : "border-border hover:border-primary/50"
+                       }`}
+                     >
+                       <img
+                         src={img}
+                         alt={`${product.name} view ${i + 1}`}
+                         className="w-full h-full object-cover"
+                       />
+                     </button>
+                   ))}
+                 </div>
+               )}
              </motion.div>
  
              {/* Details */}
@@ -362,8 +403,16 @@ const ProductDetail = () => {
                    <ShoppingCart className="w-5 h-5 mr-2" />
                    Add to Cart
                  </Button>
-                 <Button variant="outline" size="lg">
-                   <Heart className="w-5 h-5" />
+                 <Button
+                   variant="outline"
+                   size="lg"
+                   onClick={() => toggle(product)}
+                   aria-label="Toggle favorite"
+                   className={isWishlisted(product.id) ? "text-red-500 border-red-500/50" : ""}
+                 >
+                   <Heart
+                     className={`w-5 h-5 ${isWishlisted(product.id) ? "fill-current" : ""}`}
+                   />
                  </Button>
                  <Button variant="outline" size="lg">
                    <Share2 className="w-5 h-5" />

@@ -11,6 +11,7 @@ interface ProductRow {
   category: string;
   price: number;
   image_url: string;
+  gallery: string[] | null;
   weight: string;
   groupset: string;
   frame_carbon: string;
@@ -28,6 +29,7 @@ function mapRow(row: ProductRow): Product {
     category: row.category as BikeCategory,
     price: Number(row.price),
     image: row.image_url,
+    gallery: row.gallery ?? undefined,
     weight: row.weight,
     groupset: row.groupset,
     frameCarbon: row.frame_carbon,

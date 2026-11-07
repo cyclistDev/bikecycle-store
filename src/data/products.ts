@@ -5,6 +5,10 @@
  import roubaix from "@/assets/bikes/roubaix.jpg";
  import tarmacSL7 from "@/assets/bikes/tarmac-sl7.jpg";
  import shiv from "@/assets/bikes/shiv.jpg";
+ import aeroHandlebars from "@/assets/aero-handlebars.jpg";
+ import aeroWheels from "@/assets/aero-wheels.jpg";
+ import carbonFrame from "@/assets/carbon-frame.jpg";
+ import drivetrain from "@/assets/drivetrain.jpg";
  
  export type BikeCategory = "road" | "aero" | "endurance" | "gravel" | "triathlon";
  
@@ -14,6 +18,7 @@
    category: BikeCategory;
    price: number;
    image: string;
+   gallery?: string[];
    weight: string;
    groupset: string;
    frameCarbon: string;
@@ -40,6 +45,7 @@
      category: "road",
      price: 14500,
      image: tarmacSL8,
+     gallery: [aeroWheels, carbonFrame, drivetrain],
      weight: "6.7 kg",
      groupset: "Shimano Dura-Ace Di2",
      frameCarbon: "FACT 12r",
@@ -61,6 +67,7 @@
      category: "road",
      price: 12800,
      image: aethos,
+     gallery: [carbonFrame, drivetrain],
      weight: "5.9 kg",
      groupset: "Shimano Dura-Ace Di2",
      frameCarbon: "FACT 12r",
@@ -81,6 +88,7 @@
      category: "aero",
      price: 13200,
      image: venge,
+     gallery: [aeroHandlebars, aeroWheels],
      weight: "7.2 kg",
      groupset: "Shimano Dura-Ace Di2",
      frameCarbon: "FACT 11r",
@@ -100,6 +108,7 @@
      category: "gravel",
      price: 11500,
      image: crux,
+     gallery: [carbonFrame, drivetrain],
      weight: "7.4 kg",
      groupset: "SRAM Red AXS XPLR",
      frameCarbon: "FACT 12r",
@@ -120,6 +129,7 @@
      category: "endurance",
      price: 12200,
      image: roubaix,
+     gallery: [drivetrain, carbonFrame],
      weight: "7.5 kg",
      groupset: "Shimano Dura-Ace Di2",
      frameCarbon: "FACT 11r",
@@ -139,6 +149,7 @@
      category: "road",
      price: 11900,
      image: tarmacSL7,
+     gallery: [aeroWheels, carbonFrame],
      weight: "6.9 kg",
      groupset: "Shimano Dura-Ace Di2",
      frameCarbon: "FACT 11r",
@@ -158,6 +169,7 @@
      category: "triathlon",
      price: 14800,
      image: shiv,
+     gallery: [aeroHandlebars, carbonFrame],
      weight: "8.1 kg",
      groupset: "Shimano Dura-Ace Di2",
      frameCarbon: "FACT 11r",

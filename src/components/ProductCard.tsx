@@ -1,9 +1,10 @@
  import { motion } from "framer-motion";
- import { ShoppingCart, Eye, Star, Zap } from "lucide-react";
+ import { ShoppingCart, Eye, Star, Zap, Heart } from "lucide-react";
  import { Button } from "@/components/ui/button";
  import { Badge } from "@/components/ui/badge";
  import type { Product } from "@/data/products";
  import { Link } from "react-router-dom";
+ import { useWishlist } from "@/context/WishlistContext";
  
  interface ProductCardProps {
    product: Product;
@@ -11,6 +12,7 @@
  }
  
  export const ProductCard = ({ product, index }: ProductCardProps) => {
+   const { isWishlisted, toggle } = useWishlist();
    const formatPrice = (price: number) => {
      return new Intl.NumberFormat("en-US", {
        style: "currency",
@@ -55,6 +57,19 @@
            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
          />
          <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent opacity-60" />
+ 
+         {/* Wishlist */}
+         <button
+           onClick={() => toggle(product)}
+           aria-label="Toggle favorite"
+           className={`absolute top-4 right-4 z-10 w-9 h-9 rounded-full flex items-center justify-center transition-colors ${
+             isWishlisted(product.id)
+               ? "bg-red-500 text-white"
+               : "bg-background/80 text-foreground hover:bg-background"
+           }`}
+         >
+           <Heart className={`w-4 h-4 ${isWishlisted(product.id) ? "fill-current" : ""}`} />
+         </button>
  
          {/* Quick Actions */}
          <div className="absolute inset-0 flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">

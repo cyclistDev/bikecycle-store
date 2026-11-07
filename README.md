@@ -18,7 +18,7 @@ Premium bike store website for Cambodia — browse S-Works bikes, view product d
 | Order form only simulated submission (`setTimeout`) | Form submits to the `orders` table in Supabase via `useSubmitOrder()`; falls back to demo mode when unconfigured |
 | Contact info duplicated across components with inconsistent values/domains | Centralized in `src/config/site.ts` |
 | No environment variable management | `.env` + `.env.example` pattern; secrets never committed (`.env` is gitignored) |
-| Lovable boilerplate leftovers (tagger plugin, stray config, ~50 unused UI deps) | Removed; only the 14 actually-used shadcn components and their deps remain |
+| Boilerplate leftovers (dev tagger plugin, stray config, ~50 unused UI deps) | Removed; only the 14 actually-used shadcn components and their deps remain |
 
 ## Project Structure
 
@@ -71,6 +71,7 @@ create table products (
   category      text not null check (category in ('road','aero','endurance','gravel','triathlon')),
   price         numeric not null,
   image_url     text not null,
+  gallery       text[] not null default '{}',
   weight        text not null,
   groupset      text not null,
   frame_carbon  text not null,
