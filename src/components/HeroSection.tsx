@@ -1,5 +1,5 @@
  import { motion } from "framer-motion";
- import { ArrowDown, Zap } from "lucide-react";
+ import { ArrowDown } from "lucide-react";
  import { Button } from "@/components/ui/button";
  import heroBike from "@/assets/hero-bike.jpg";
  
@@ -30,7 +30,7 @@
              transition={{ duration: 0.6 }}
              className="inline-flex items-center gap-2 bg-primary/20 border border-primary/40 rounded-full px-4 py-2 mb-8"
            >
-             <Zap className="w-4 h-4 text-primary" />
+             {/* <Zap className="w-4 h-4 text-primary" /> */}
              <span className="text-sm font-medium text-primary">
                "Win Everything" — The S-Works Promise
              </span>
@@ -79,7 +79,7 @@
          </div>
        </div>
  
-       {/* Scroll Indicator */}
+       {/* Scroll Indicator — uncomment when needed
        <motion.div
          initial={{ opacity: 0 }}
          animate={{ opacity: 1 }}
@@ -96,6 +96,7 @@
            <ArrowDown className="w-5 h-5 text-primary" />
          </motion.div>
        </motion.div>
+       */}
      </section>
    );
  };

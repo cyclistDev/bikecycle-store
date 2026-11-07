@@ -7,6 +7,7 @@ export interface OrderPayload {
   bike: string;
   payment: string;
   message: string;
+  riderHeight?: number;
 }
 
 export async function submitOrder(payload: OrderPayload): Promise<void> {
@@ -23,6 +24,7 @@ export async function submitOrder(payload: OrderPayload): Promise<void> {
     bike_model: payload.bike,
     payment_method: payload.payment,
     message: payload.message || null,
+    rider_height: payload.riderHeight ?? null,
     status: "new",
   });
 

@@ -90,6 +90,7 @@ create table orders (
   bike_model      text not null,
   payment_method  text not null,
   message         text,
+  rider_height    numeric,
   status          text not null default 'new',
   created_at      timestamptz not null default now()
 );

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -9,6 +10,7 @@ import {
   Truck,
   Shield,
   RotateCcw,
+  Ruler,
 } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
@@ -16,12 +18,24 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useProducts } from "@/hooks/useProducts";
 import { useCart } from "@/context/CartContext";
+import {
+  sizeCharts,
+  frameColors,
+  groupsetOptions,
+  recommendSize,
+  type BikeConfiguration,
+} from "@/data/bikeOptions";
 
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { addItem } = useCart();
   const { data: products = [], isLoading } = useProducts();
   const product = products.find((p) => p.id === id);
+
+  const [heightCm, setHeightCm] = useState("");
+  const [selectedSize, setSelectedSize] = useState("");
+  const [selectedColor, setSelectedColor] = useState(frameColors[0].name);
+  const [selectedGroupset, setSelectedGroupset] = useState(groupsetOptions[0].name);
 
   if (isLoading) {
     return (
@@ -66,8 +80,25 @@ const ProductDetail = () => {
     }).format(price);
   };
 
+  const sizeChart = sizeCharts[product.category];
+  const recommended = recommendSize(product.category, Number(heightCm));
+  const color = frameColors.find((c) => c.name === selectedColor) ?? frameColors[0];
+  const groupset = groupsetOptions.find((g) => g.name === selectedGroupset) ?? groupsetOptions[0];
+  const priceAdjustment = color.priceDelta + groupset.priceDelta;
+  const configuredPrice = product.price + priceAdjustment;
+
+  const buildConfiguration = (): BikeConfiguration | undefined => {
+    if (!selectedSize) return undefined;
+    return {
+      size: selectedSize,
+      frameColor: color.name,
+      groupset: groupset.name,
+      priceAdjustment,
+    };
+  };
+
   const handleAddToCart = () => {
-    addItem(product);
+    addItem(product, buildConfiguration());
   };
  
    return (
@@ -140,8 +171,13 @@ const ProductDetail = () => {
                {/* Price */}
                <div className="flex items-baseline gap-4 mb-8">
                  <span className="text-4xl font-bold text-foreground">
-                   {formatPrice(product.price)}
+                   {formatPrice(configuredPrice)}
                  </span>
+                 {priceAdjustment !== 0 && (
+                   <span className="text-sm text-muted-foreground line-through">
+                     {formatPrice(product.price)}
+                   </span>
+                 )}
                  {product.inStock ? (
                   <Badge className="bg-primary/80 text-primary-foreground">In Stock</Badge>
                  ) : (
@@ -177,6 +213,129 @@ const ProductDetail = () => {
                  </div>
                </div>
  
+               {/* Configure Your Bike */}
+               <div className="mb-8 p-6 bg-card rounded-xl border border-border space-y-6">
+                 <h3 className="font-display text-xl text-foreground">
+                   CONFIGURE YOUR BIKE
+                 </h3>
+
+                 {/* Rider Height → recommended size */}
+                 <div>
+                   <label className="flex items-center gap-2 text-sm font-medium text-foreground mb-2">
+                     <Ruler className="w-4 h-4 text-primary" />
+                     Your height (cm)
+                   </label>
+                   <div className="flex items-center gap-3">
+                     <input
+                       type="number"
+                       min={120}
+                       max={220}
+                       placeholder="e.g. 175"
+                       value={heightCm}
+                       onChange={(e) => setHeightCm(e.target.value)}
+                       className="w-32 h-11 bg-secondary border border-border rounded-md px-3 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                     />
+                     {recommended && (
+                       <span className="text-sm text-primary font-medium">
+                         Recommended size: {recommended.size}
+                       </span>
+                     )}
+                   </div>
+                 </div>
+
+                 {/* Frame Size */}
+                 <div>
+                   <label className="block text-sm font-medium text-foreground mb-2">
+                     Frame Size {selectedSize && `(selected: ${selectedSize})`}
+                   </label>
+                   <div className="flex flex-wrap gap-2">
+                     {sizeChart.map((s) => {
+                       const isRecommended = recommended?.size === s.size;
+                       const isSelected = selectedSize === s.size;
+                       return (
+                         <button
+                           key={s.size}
+                           type="button"
+                           onClick={() => setSelectedSize(s.size)}
+                           title={`${s.minHeightCm}–${s.maxHeightCm} cm`}
+                           className={`h-11 px-4 rounded-md border text-sm font-medium transition-colors ${
+                             isSelected
+                               ? "bg-primary text-primary-foreground border-primary"
+                               : isRecommended
+                                 ? "bg-primary/10 text-primary border-primary/50"
+                                 : "bg-secondary text-foreground border-border hover:border-primary/50"
+                           }`}
+                         >
+                           {s.size}
+                           {isRecommended && !isSelected && " ★"}
+                         </button>
+                       );
+                     })}
+                   </div>
+                 </div>
+
+                 {/* Frame Color */}
+                 <div>
+                   <label className="block text-sm font-medium text-foreground mb-2">
+                     Frame Color
+                   </label>
+                   <div className="flex flex-wrap gap-3">
+                     {frameColors.map((c) => (
+                       <button
+                         key={c.name}
+                         type="button"
+                         onClick={() => setSelectedColor(c.name)}
+                         title={`${c.name}${c.priceDelta ? ` (+$${c.priceDelta})` : ""}`}
+                         className={`flex items-center gap-2 px-3 py-2 rounded-md border text-sm transition-colors ${
+                           selectedColor === c.name
+                             ? "border-primary bg-primary/10 text-foreground"
+                             : "border-border bg-secondary text-muted-foreground hover:border-primary/50"
+                         }`}
+                       >
+                         <span
+                           className="w-4 h-4 rounded-full border border-border"
+                           style={{ backgroundColor: c.hex }}
+                         />
+                         {c.name}
+                         {c.priceDelta > 0 && (
+                           <span className="text-xs text-primary">+${c.priceDelta}</span>
+                         )}
+                       </button>
+                     ))}
+                   </div>
+                 </div>
+
+                 {/* Groupset */}
+                 <div>
+                   <label className="block text-sm font-medium text-foreground mb-2">
+                     Groupset
+                   </label>
+                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                     {groupsetOptions.map((g) => (
+                       <button
+                         key={g.name}
+                         type="button"
+                         onClick={() => setSelectedGroupset(g.name)}
+                         className={`flex items-center justify-between px-4 py-3 rounded-md border text-sm transition-colors ${
+                           selectedGroupset === g.name
+                             ? "border-primary bg-primary/10 text-foreground"
+                             : "border-border bg-secondary text-muted-foreground hover:border-primary/50"
+                         }`}
+                       >
+                         <span>{g.name}</span>
+                         <span className="text-xs">
+                           {g.priceDelta > 0
+                             ? `+$${g.priceDelta}`
+                             : g.priceDelta < 0
+                               ? `-$${Math.abs(g.priceDelta)}`
+                               : "incl."}
+                         </span>
+                       </button>
+                     ))}
+                   </div>
+                 </div>
+               </div>
+
                {/* Features */}
                <div className="mb-8">
                  <h3 className="font-display text-xl text-foreground mb-4">

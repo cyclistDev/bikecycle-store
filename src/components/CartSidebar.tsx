@@ -8,7 +8,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { useCart } from "@/context/CartContext";
+import { useCart, cartItemKey, itemUnitPrice } from "@/context/CartContext";
 
 export const CartSidebar = () => {
   const {
@@ -63,9 +63,11 @@ export const CartSidebar = () => {
             {/* Cart Items */}
             <div className="flex-1 overflow-y-auto py-4 space-y-4">
               <AnimatePresence>
-                {items.map((item) => (
+                {items.map((item) => {
+                  const key = cartItemKey(item);
+                  return (
                   <motion.div
-                    key={item.product.id}
+                    key={key}
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -20 }}
@@ -88,16 +90,20 @@ export const CartSidebar = () => {
                       <p className="text-xs text-muted-foreground capitalize">
                         {item.product.category}
                       </p>
+                      {item.options && (
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                          Size {item.options.size} · {item.options.frameColor} ·{" "}
+                          {item.options.groupset}
+                        </p>
+                      )}
                       <p className="text-primary font-semibold mt-1">
-                        {formatPrice(item.product.price)}
+                        {formatPrice(itemUnitPrice(item))}
                       </p>
 
                       {/* Quantity Controls */}
                       <div className="flex items-center gap-2 mt-2">
                         <button
-                          onClick={() =>
-                            updateQuantity(item.product.id, item.quantity - 1)
-                          }
+                          onClick={() => updateQuantity(key, item.quantity - 1)}
                           className="w-7 h-7 rounded bg-muted hover:bg-muted/80 flex items-center justify-center transition-colors"
                         >
                           <Minus className="w-3 h-3" />
@@ -106,15 +112,13 @@ export const CartSidebar = () => {
                           {item.quantity}
                         </span>
                         <button
-                          onClick={() =>
-                            updateQuantity(item.product.id, item.quantity + 1)
-                          }
+                          onClick={() => updateQuantity(key, item.quantity + 1)}
                           className="w-7 h-7 rounded bg-muted hover:bg-muted/80 flex items-center justify-center transition-colors"
                         >
                           <Plus className="w-3 h-3" />
                         </button>
                         <button
-                          onClick={() => removeItem(item.product.id)}
+                          onClick={() => removeItem(key)}
                           className="ml-auto w-7 h-7 rounded bg-destructive/10 hover:bg-destructive/20 text-destructive flex items-center justify-center transition-colors"
                         >
                           <Trash2 className="w-3 h-3" />
@@ -122,7 +126,8 @@ export const CartSidebar = () => {
                       </div>
                     </div>
                   </motion.div>
-                ))}
+                  );
+                })}
               </AnimatePresence>
             </div>
 

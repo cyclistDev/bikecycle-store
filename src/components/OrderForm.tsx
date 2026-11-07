@@ -1,6 +1,6 @@
  import { useState } from "react";
  import { motion } from "framer-motion";
- import { Send, User, Mail, Phone, MessageSquare, Bike, CreditCard } from "lucide-react";
+ import { Send, User, Mail, Phone, MessageSquare, Bike, CreditCard, Ruler } from "lucide-react";
  import { Button } from "@/components/ui/button";
  import { Input } from "@/components/ui/input";
  import { Textarea } from "@/components/ui/textarea";
@@ -19,13 +19,17 @@
      bike: "",
      payment: "",
      message: "",
+     height: "",
    });
  
    const handleSubmit = async (e: React.FormEvent) => {
      e.preventDefault();
 
      try {
-       await submitOrder.mutateAsync(formData);
+       await submitOrder.mutateAsync({
+         ...formData,
+         riderHeight: formData.height ? Number(formData.height) : undefined,
+       });
        toast({
          title: "Inquiry Submitted!",
          description: "Our team will contact you within 24 hours.",
@@ -37,6 +41,7 @@
          bike: "",
          payment: "",
          message: "",
+         height: "",
        });
      } catch {
        toast({
@@ -143,6 +148,20 @@
                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                    className="pl-12 h-14 bg-secondary border-border"
                    required
+                 />
+               </div>
+ 
+               {/* Rider Height (optional, for sizing) */}
+               <div className="relative">
+                 <Ruler className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                 <Input
+                   type="number"
+                   placeholder="Your height in cm (optional)"
+                   value={formData.height}
+                   onChange={(e) => setFormData({ ...formData, height: e.target.value })}
+                   className="pl-12 h-14 bg-secondary border-border"
+                   min={120}
+                   max={220}
                  />
                </div>
  
