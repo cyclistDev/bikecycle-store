@@ -36,7 +36,6 @@ const ProductDetail = () => {
 
   const [heightCm, setHeightCm] = useState("");
   const [selectedSize, setSelectedSize] = useState("");
-  const [selectedColor, setSelectedColor] = useState(frameColors[0].name);
   const [selectedGroupset, setSelectedGroupset] = useState(groupsetOptions[0].name);
   const [activeImage, setActiveImage] = useState("");
 
@@ -86,11 +85,10 @@ const ProductDetail = () => {
   const sizeChart = sizeCharts[product.category];
   const images = [product.image, ...(product.gallery ?? [])];
   const currentImage = images.includes(activeImage) ? activeImage : product.image;
-  const showColorTint = selectedColor !== frameColors[0].name;
   const recommended = recommendSize(product.category, Number(heightCm));
-  const color = frameColors.find((c) => c.name === selectedColor) ?? frameColors[0];
+  const color = frameColors[0];
   const groupset = groupsetOptions.find((g) => g.name === selectedGroupset) ?? groupsetOptions[0];
-  const priceAdjustment = color.priceDelta + groupset.priceDelta;
+  const priceAdjustment = groupset.priceDelta;
   const configuredPrice = product.price + priceAdjustment;
 
   const buildConfiguration = (): BikeConfiguration | undefined => {
@@ -142,17 +140,6 @@ const ProductDetail = () => {
                    alt={product.name}
                    className="w-full aspect-[4/3] object-cover"
                  />
-                 {/* Approximate frame color preview (CSS tint) */}
-                 {showColorTint && (
-                   <div
-                     className="absolute inset-0 pointer-events-none"
-                     style={{
-                       backgroundColor: color.hex,
-                       mixBlendMode: "color",
-                       opacity: 0.45,
-                     }}
-                   />
-                 )}
                  {/* Badges */}
                  <div className="absolute top-4 left-4 flex gap-2">
                    {product.isNew && (
@@ -315,23 +302,22 @@ const ProductDetail = () => {
                    </div>
                  </div>
 
-                 {/* Frame Color */}
+                 {/* Frame Color — deprecated, coming soon */}
                  <div>
-                   <label className="block text-sm font-medium text-foreground mb-2">
+                   <label className="flex items-center gap-2 text-sm font-medium text-foreground mb-2">
                      Frame Color
+                     <span className="text-[10px] uppercase tracking-wider bg-secondary text-muted-foreground px-2 py-0.5 rounded-full border border-border">
+                       Coming soon
+                     </span>
                    </label>
-                   <div className="flex flex-wrap gap-3">
+                   <div className="flex flex-wrap gap-3 opacity-60">
                      {frameColors.map((c) => (
                        <button
                          key={c.name}
                          type="button"
-                         onClick={() => setSelectedColor(c.name)}
-                         title={`${c.name}${c.priceDelta ? ` (+$${c.priceDelta})` : ""}`}
-                         className={`flex items-center gap-2 px-3 py-2 rounded-md border text-sm transition-colors ${
-                           selectedColor === c.name
-                             ? "border-primary bg-primary/10 text-foreground"
-                             : "border-border bg-secondary text-muted-foreground hover:border-primary/50"
-                         }`}
+                         disabled
+                         title={`${c.name} — coming soon`}
+                         className="flex items-center gap-2 px-3 py-2 rounded-md border border-border bg-secondary text-muted-foreground cursor-not-allowed"
                        >
                          <span
                            className="w-4 h-4 rounded-full border border-border"
@@ -339,11 +325,14 @@ const ProductDetail = () => {
                          />
                          {c.name}
                          {c.priceDelta > 0 && (
-                           <span className="text-xs text-primary">+${c.priceDelta}</span>
+                           <span className="text-xs text-muted-foreground">+${c.priceDelta}</span>
                          )}
                        </button>
                      ))}
                    </div>
+                   <p className="text-xs text-muted-foreground mt-2">
+                     Custom frame colors and paint options are coming soon.
+                   </p>
                  </div>
 
                  {/* Groupset */}

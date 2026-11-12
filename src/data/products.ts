@@ -1,14 +1,14 @@
  import tarmacSL8 from "@/assets/hero-bike.jpg";
- import aethos from "@/assets/bikes/aethos.jpg";
- import venge from "@/assets/bikes/venge.jpg";
- import crux from "@/assets/bikes/crux.jpg";
- import roubaix from "@/assets/bikes/roubaix.jpg";
- import tarmacSL7 from "@/assets/bikes/tarmac-sl7.jpg";
- import shiv from "@/assets/bikes/shiv.jpg";
- import aeroHandlebars from "@/assets/aero-handlebars.jpg";
- import aeroWheels from "@/assets/aero-wheels.jpg";
- import carbonFrame from "@/assets/carbon-frame.jpg";
- import drivetrain from "@/assets/drivetrain.jpg";
+ import aethos from "@/assets/bikes/endurance/aethos.jpg";
+ import venge from "@/assets/bikes/aero/venge.jpg";
+ import crux from "@/assets/bikes/gravel/crux.jpg";
+ import roubaix from "@/assets/bikes/endurance/roubaix.jpg";
+ import tarmacSL7 from "@/assets/bikes/road/tarmac-sl7.jpg";
+ import shiv from "@/assets/bikes/triathlon/shiv.jpg";
+ import aeroHandlebars from "@/assets/accessories/aero-handlebars.jpg";
+ import aeroWheels from "@/assets/accessories/aero-wheels.jpg";
+ import carbonFrame from "@/assets/accessories/carbon-frame.jpg";
+ import drivetrain from "@/assets/accessories/drivetrain.jpg";
  
  export type BikeCategory = "road" | "aero" | "endurance" | "gravel" | "triathlon";
  

@@ -106,6 +106,24 @@ create policy "orders are insertable" on orders for insert with check (true);
 
 3. Seed the `products` table (export rows from `src/data/products.ts`, or insert manually)
 
+## Assets / Images
+
+Bike photos are organized by category so new images can be dropped in easily:
+
+```
+src/assets/
+├── hero-bike.jpg            # homepage hero background
+├── bikes/
+│   ├── road/                # e.g. tarmac-sl7.jpg → category "road"
+│   ├── aero/                # e.g. venge.jpg → category "aero"
+│   ├── endurance/           # e.g. aethos.jpg, roubaix.jpg
+│   ├── gravel/              # e.g. crux.jpg
+│   └── triathlon/           # e.g. shiv.jpg
+└── accessories/             # detail shots: wheels, handlebars, frame, drivetrain
+```
+
+To add a product image: drop the file in the matching `bikes/<category>/` folder, import it in `src/data/products.ts`, and set it as `image` (or add to `gallery` for extra detail shots).
+
 ## Scripts
 
 | Command | Description |
