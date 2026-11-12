@@ -61,50 +61,14 @@ Without these variables the app still works — it serves static product data an
 
 ## Supabase Setup
 
-1. Create a project at [supabase.com](https://supabase.com)
-2. Run this SQL in the SQL Editor:
+1. Create a free project at [supabase.com](https://supabase.com)
+2. **Schema:** Supabase Dashboard → SQL Editor → paste and run `supabase/schema.sql`
+3. **Seed products:** paste and run `supabase/seed.sql`
+   - Replace each `TODO_IMAGE_URL` with a real image URL. Recommended: Dashboard → Storage → create a public `products` bucket, upload images from `src/assets/bikes/`, and paste each file's public URL
+4. Copy **Project URL** and **anon public key** (Settings → API) into `.env` locally, and into Netlify → Site settings → Environment variables for production
+5. To manage products/orders yourself later: enable authenticated admin policies (commented at the bottom of `schema.sql`) and create a user in Supabase Auth
 
-```sql
-create table products (
-  id            text primary key,
-  name          text not null,
-  category      text not null check (category in ('road','aero','endurance','gravel','triathlon')),
-  price         numeric not null,
-  image_url     text not null,
-  gallery       text[] not null default '{}',
-  weight        text not null,
-  groupset      text not null,
-  frame_carbon  text not null,
-  description   text not null,
-  features      text[] not null default '{}',
-  in_stock      boolean not null default true,
-  is_new        boolean not null default false,
-  is_best_seller boolean not null default false,
-  created_at    timestamptz not null default now()
-);
-
-create table orders (
-  id              bigint generated always as identity primary key,
-  customer_name   text not null,
-  customer_email  text not null,
-  customer_phone  text not null,
-  bike_model      text not null,
-  payment_method  text not null,
-  message         text,
-  rider_height    numeric,
-  status          text not null default 'new',
-  created_at      timestamptz not null default now()
-);
-
--- Public read access for products; anyone can insert orders (no auth yet)
-alter table products enable row level security;
-alter table orders enable row level security;
-
-create policy "products are public" on products for select using (true);
-create policy "orders are insertable" on orders for insert with check (true);
-```
-
-3. Seed the `products` table (export rows from `src/data/products.ts`, or insert manually)
+> Without env vars the app runs in demo mode (static products + simulated orders), so you can deploy first and connect Supabase anytime.
 
 ## Assets / Images
 
